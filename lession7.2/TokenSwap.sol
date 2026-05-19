@@ -68,10 +68,10 @@ contract TokenSwap {
         } catch Error(string memory reason) {
             emit SwapFailed(swapId, reason);
             revert(reason);
-        } catch Panic(uint256 errorCode) {
+        } catch Panic(uint256) {
             emit SwapFailed(swapId, "Panic occurred");
             revert();
-        } catch (bytes memory lowLevelData) {
+        } catch (bytes memory) {
             emit SwapFailed(swapId, "Low level error");
             revert();
         }
@@ -87,11 +87,11 @@ contract TokenSwap {
             tokenA.transfer(request.user, request.amountA);
             emit SwapFailed(swapId, string.concat("TokenB transfer failed: ", reason));
             revert(reason);
-        } catch Panic(uint256 errorCode) {
+        } catch Panic(uint256) {
             tokenA.transfer(request.user, request.amountA);
             emit SwapFailed(swapId, "Panic in TokenB transfer");
             revert();
-        } catch (bytes memory lowLevelData) {
+        } catch (bytes memory) {
             tokenA.transfer(request.user, request.amountA);
             emit SwapFailed(swapId, "Low level error in TokenB transfer");
             revert();

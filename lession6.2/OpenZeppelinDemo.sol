@@ -7,6 +7,7 @@ import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
 import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
 contract OpenZeppelinDemo {
     using EnumerableSet for EnumerableSet.AddressSet;
@@ -28,21 +29,25 @@ contract OpenZeppelinDemo {
         return Strings.toString(num);
     }
 
-    function demoAddressToString() public pure returns (string memory) {
-        address addr = msg.sender;
-        return Strings.toHexString(addr);
+    function demoAddressToString() public view returns (string memory) {
+        return Strings.toHexString(msg.sender);
     }
 
     // ========== Address 库演示 ==========
 
+    function isContract(address addr) internal view returns (bool) {
+        uint256 size;
+        assembly {
+            size := extcodesize(addr)
+        }
+        return size > 0;
+    }
+
     function demoIsContract() public view returns (bool) {
-        // 检测地址是否为合约
-        bool isContractFlag = Address.isContract(address(this));
-        return isContractFlag;
+        return isContract(address(this));
     }
 
     function demoSendValue(address payable recipient) public payable {
-        // 安全发送 ETH（替代 transfer）
         require(msg.value > 0, "No ETH sent");
         Address.sendValue(recipient, msg.value);
     }
@@ -105,13 +110,11 @@ contract OpenZeppelinDemo {
     // ========== ERC20 + Address 组合演示 ==========
 
     function demoTransferToContract(address token, address recipient, uint256 amount) external {
-        // 安全转账到合约地址
-        require(Address.isContract(recipient), "Not a contract");
+        require(isContract(recipient), "Not a contract");
         IERC20(token).transfer(recipient, amount);
     }
 
     function demoSafeTransferFrom(address token, address from, address to, uint256 amount) external {
-        // 安全授权转账
-        IERC20(token).safeTransferFrom(from, to, amount);
+        SafeERC20.safeTransferFrom(IERC20(token), from, to, amount);
     }
 }

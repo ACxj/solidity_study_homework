@@ -169,12 +169,7 @@ contract MultiSigWallet {
         return confirmationsList;
     }
 
-    function getTransactionIds(
-        uint256 from,
-        uint256 to,
-        bool pending,
-        bool executed
-    ) public view returns (uint256[] memory) {
+    function getTransactionIds(bool executed) public view returns (uint256[] memory) {
         uint256 count;
         for (uint256 i = 0; i < transactionCount; i++) {
             if (transactions[i].executed == executed) {

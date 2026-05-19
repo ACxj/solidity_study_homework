@@ -8,7 +8,8 @@ contract SimpleBank {
     event Withdraw(address indexed account, uint256 amount);
 
     error ZeroAmount();
-    error InsufficientBalance(uint256 available, uint256 requested);
+    error InsufficientBalance();
+    error TransferFailed();
 
     function deposit() external payable {
         require(msg.value > 0, "Deposit amount must be greater than 0");
@@ -17,12 +18,13 @@ contract SimpleBank {
     }
 
     function withdraw(uint256 amount) external {
-        require(amount > 0, "Withdrawal amount must be greater than 0");
-        require(balances[msg.sender] >= amount, "Insufficient balance");
+        if (amount == 0) revert ZeroAmount();
+        if (balances[msg.sender] < amount) revert InsufficientBalance();
 
         balances[msg.sender] -= amount;
         emit Withdraw(msg.sender, amount);
-        payable(msg.sender).transfer(amount);
+        (bool success, ) = payable(msg.sender).call{value: amount}("");
+        if (!success) revert TransferFailed();
     }
 
     function getBalance() external view returns (uint256) {

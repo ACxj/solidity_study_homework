@@ -34,6 +34,8 @@ contract MyContract is Ownable, Pausable {
         emit Deposit(msg.sender, msg.value);
     }
 
+    error TransferFailed();
+
     // 取款
     function withdraw(uint256 amount) external whenNotPaused {
         if (amount == 0) revert ZeroAmount();
@@ -41,7 +43,8 @@ contract MyContract is Ownable, Pausable {
 
         balances[msg.sender] -= amount;
         emit Withdraw(msg.sender, amount);
-        payable(msg.sender).transfer(amount);
+        (bool success, ) = payable(msg.sender).call{value: amount}("");
+        if (!success) revert TransferFailed();
     }
 
     // 暂停合约（仅所有者）

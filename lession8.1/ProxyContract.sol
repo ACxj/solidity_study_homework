@@ -10,6 +10,7 @@ contract ProxyContract is StorageLayout {
     error InvalidImplementation();
     error InvalidAdmin();
     error NotProxy();
+    error Unauthorized();
 
     constructor(address _implementation, address _admin) {
         if (_implementation == address(0)) revert InvalidImplementation();

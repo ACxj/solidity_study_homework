@@ -102,24 +102,6 @@ contract Create2Factory {
         return deployed;
     }
 
-    function deployWithValue(
-        bytes32 salt,
-        bytes memory bytecode,
-        uint256 value,
-        uint256 initialValue
-    ) external payable returns (address deployed) {
-        if (msg.value < value) revert();
-
-        deployed = deploy(salt, bytecode, value);
-        if (value > 0) {
-            payable(deployed).transfer(value);
-        }
-
-        if (initialValue > 0) {
-            SimpleContract(deployed).value();
-        }
-    }
-
     function getDeployedContract(address deployer, bytes32 salt)
         external
         view

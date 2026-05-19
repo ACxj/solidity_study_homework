@@ -1,0 +1,7 @@
+## Remix 测试步骤
+1. 部署 CEIVault
+2. 部署 ReentrancyAttacker （传入 vault 地址）
+3. 给 attacker 转 10 ETH
+4. 给 vault 转 100 ETH
+5. 调用 attacker.attack()
+6. 观察 attacker 是否能取出超过 1 ETH（如果可以，说明防御失败）
