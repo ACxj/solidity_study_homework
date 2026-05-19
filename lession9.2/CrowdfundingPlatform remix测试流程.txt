@@ -1,0 +1,8 @@
+1. 部署 CrowdfundingPlatform
+2. 账户A: createCampaign("项目", "描述", 10 ether, 7, 0.1 ether)
+3. 账户A: startCampaign(0)
+4. 账户B: donate(0){value: 5 ether}
+5. 账户C: donate(0){value: 6 ether}
+6. 等待7天后
+7. 任何人: endCampaign(0)
+8. 账户A: withdrawFunds(0) → 提取 11 ether
